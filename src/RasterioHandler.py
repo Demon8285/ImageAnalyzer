@@ -32,4 +32,11 @@ def WriteFile(image: np.ndarray, outputPath: str, meta: dict) -> None:
     meta.update(dtype = rast.uint8, driver = 'GTiff', count = 1)
 
     with rast.open(outputPath, 'w', **meta) as dst:
-        dst.write(image, 1)
+        dst.write(image, indexes = 1)
+
+def WriteMultiplyChannelsFile(image: np.ndarray, outputPath: str, meta: dict) -> None:
+
+    meta.update(dtype = rast.uint8, driver = 'GTiff', count = 3)
+
+    with rast.open(outputPath, 'w', **meta) as dst:
+        dst.write(np.rollaxis(image, axis = 2))

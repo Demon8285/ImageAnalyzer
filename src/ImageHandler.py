@@ -3,6 +3,7 @@ import random
 import numpy as np
 from scipy import ndimage
 import math
+import cv2
 
 
 def ConvertToBitMask(image: np.ndarray) -> np.ndarray:
@@ -141,5 +142,26 @@ def FindColumns(image: np.ndarray) -> np.ndarray:
         columns.append(Plant.Column(columnNumer + 1, left, right, plantsCount))
 
     return np.array(columns)
+
+def DrawPlants(image: np.ndarray, plants: np.ndarray, columns: np.ndarray = None, showBorder: bool = False) -> np.ndarray:
+
+    image = np.copy(image)
+
+    color = (255, 0, 0)
+
+    if columns is not None:
+        for column in columns:
+            image[:, column.LeftBorder] = 255
+
+    image = image.astype(np.uint8)
+
+    image = cv2.merge((image, image, image))
+
+    for plant in plants:
+        
+        if showBorder: image = cv2.circle(image, plant.Center, plant.GetDiagonal(), color)
+        image = cv2.circle(image, plant.Center, 1, color, -1)
+
+    return image
         
 
