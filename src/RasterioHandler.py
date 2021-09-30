@@ -2,6 +2,7 @@ from ast import Str
 from typing import List
 import numpy as np
 import rasterio as rast
+import rasterio.transform
 
 def ReadBands(filePath: str) -> List[np.ndarray]:
     
@@ -40,3 +41,8 @@ def WriteMultiplyChannelsFile(image: np.ndarray, outputPath: str, meta: dict) ->
 
     with rast.open(outputPath, 'w', **meta) as dst:
         dst.write(np.rollaxis(image, axis = 2))
+
+def ConvertCenters(plants, filePath):
+
+    with rast.open(filePath) as image:
+        return np.array([rasterio.transform.xy(image.transform, plant.Center[0], plant.Center[1]) for plant in plants])

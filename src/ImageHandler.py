@@ -163,5 +163,14 @@ def DrawPlants(image: np.ndarray, plants: np.ndarray, columns: np.ndarray = None
         image = cv2.circle(image, plant.Center, 1, color, -1)
 
     return image
+
+def DrawColumns(image: np.ndarray, columns: np.ndarray) -> np.ndarray:
+    
+    image = np.zeros(image.shape)
+
+    for column in columns:
+        image[:, column.LeftBorder] = 1
+
+    return image
         
 

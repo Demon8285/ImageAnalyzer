@@ -3,6 +3,9 @@ import ImageHandler
 import VisualizeImage
 import DataExport
 
+import rasterio
+import rasterio.transform
+
 def Main():
 
     filePath = "sources/imageSource.tif"
@@ -30,8 +33,8 @@ def Main():
 
     #RasterioHandler.WriteFile(ImageHandler.ConvertFromBitMask(image), "output/outputSplit.tif", meta)
 
-    VisualizeImage.ShowImage(ImageHandler.SetUniqueIndex(image), "Split", True)
-    VisualizeImage.WriteImage(ImageHandler.SetUniqueIndex(image), outputPath = "output/SplitColor.png")
+    #VisualizeImage.ShowImage(ImageHandler.SetUniqueIndex(image), "Split", True)
+    #VisualizeImage.WriteImage(ImageHandler.SetUniqueIndex(image), outputPath = "output/SplitColor.png")
 
     plants = ImageHandler.FindPlants(image)
     columns = ImageHandler.FindColumns(image)
@@ -39,12 +42,17 @@ def Main():
     print(f"Found {len(plants)} plants")
 
     plantsMap = ImageHandler.DrawPlants(ImageHandler.ConvertFromBitMask(image), plants, columns, showBorder = True)
-    RasterioHandler.WriteMultiplyChannelsFile(plantsMap, "output/PlantsMap.tif", meta)
+    #RasterioHandler.WriteMultiplyChannelsFile(plantsMap, "output/PlantsMap.tif", meta)
 
-    VisualizeImage.ShowImage(plantsMap, "Plant Map")
+    #VisualizeImage.ShowImage(plantsMap, "Plant Map")
 
-    DataExport.PlantsExport(plants, "output/plants.csv")
-    DataExport.ColumnsExport(columns, "output/columns.csv")
+    #DataExport.PlantsExport(plants, "output/plants.csv")
+    #DataExport.ColumnsExport(columns, "output/columns.csv")
+
+    #columnsImage = ImageHandler.DrawColumns(image, columns)
+    #RasterioHandler.WriteFile(ImageHandler.ConvertFromBitMask(columnsImage), "output/columnsMap.tif", meta)
+
+    DataExport.ExportCentersToGeoJson(RasterioHandler.ConvertCenters(plants, filePath), "output/PlantCenters.geojson")
 
 if __name__ == "__main__":
     Main()    

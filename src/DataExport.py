@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import Plant
+import geojson
 
 def PlantsExport(plants: np.ndarray, outputPath : str) -> None:
 
@@ -27,3 +28,18 @@ def ColumnsExport(columns: np.ndarray, outputPath : str) -> None:
     dataFrame.set_index("#", inplace = True)
 
     dataFrame.to_csv(outputPath)
+
+def ExportCentersToGeoJson(plantsCenters: np.ndarray, outPath: str) -> None:
+    
+    features = []
+
+    for n, center in enumerate(plantsCenters):
+        x,y = center
+        point = geojson.Point((x, y))
+
+        features.append(geojson.Feature(geometry=point, properties={"#": n}))
+
+    feature_collection = geojson.FeatureCollection(features)
+
+    with open(outPath, 'w') as f:
+        geojson.dump(feature_collection, f)
